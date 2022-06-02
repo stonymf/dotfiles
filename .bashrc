@@ -82,11 +82,11 @@ alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.ar
 __powerline() {
     # Colors
     COLOR_RESET='\[\033[m\]'
-    COLOR_CWD=${COLOR_CWD:-'\[\033[0;34m\]'} # blue
+    COLOR_CWD=${COLOR_CWD:-'\[\033[0;37m\]'} # white
     COLOR_GIT=${COLOR_GIT:-'\[\033[0;36m\]'} # cyan
-    COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[0;32m\]'} # green
+    COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[0;37m\]'} # white
     COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[0;31m\]'} # red
-    COLOR_SSH_USER=${COLOR_SSH_USER:-'\[\033[0;33m\]'} # yellow
+    COLOR_SSH_USER=${COLOR_SSH_USER:-'\[\033[0;35m\]'} # yellow
 
     # Symbols
     SYMBOL_GIT_BRANCH=${SYMBOL_GIT_BRANCH:-⑂}
@@ -191,3 +191,4 @@ set -o vi
 
 # Let user know if necessary commands don't exist
 if [[ ! $( command -v fasd ) ]]; then echo "fasd needs to be installed"; fi
+
