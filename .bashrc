@@ -74,7 +74,7 @@ alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.ar
 # Different color for SSH
 SSH_IP=$( echo $SSH_CLIENT | grep .; echo $? )
 SSH2_IP=$( echo $SSH2_CLIENT | grep .; echo $? )
-if [[ $SSH2_IP != 1 || $SSH_IP != 1 ]] ; then
+if [ "$SSH2_IP" != 1 || "$SSH_IP" != 1 ]] ; then
         PS1="\n\[\e[0;35m\]\u@\h \w\n-> \[\e[0m\]"
 else
         PS1="\n\[\e[0;36m\]\u@\h \w\n-> \[\e[0m\]"
