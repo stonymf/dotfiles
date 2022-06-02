@@ -44,8 +44,6 @@ alias python='python3'
 
 # color for grep
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
 
 # Naviation aliases
 alias ..='cd ..'
@@ -54,7 +52,8 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
 # fasd
-alias fa='fasd -a'        # any
+
+alias fa='fasd -a'       # any
 alias s='fasd -si'       # show / search / select
 alias d='fasd -d'        # directory
 alias f='fasd -f'        # file
@@ -75,8 +74,6 @@ alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.ar
 # Different color for SSH
 SSH_IP=$( echo $SSH_CLIENT | grep . | echo $? )
 SSH2_IP=$( echo $SSH2_CLIENT | grep . | echo $? )
-echo $SSH_IP
-echo $SSH2_IP
 if [ $SSH2_IP != 0 ] || [ $SSH_IP != 0 ] ; then
         PS1="\n\[\e[0;35m\]\u@\h \w\n-> \[\e[0m\]"
 else
@@ -91,3 +88,6 @@ eval "$(fasd --init auto)"
 
 # Vim keybindings
 set -o vi
+
+# Let user know if necessary commands don't exist
+if [[ ! $( command -v fasd ) ]]; then echo "fasd needs to be installed"; fi
