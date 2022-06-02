@@ -80,77 +80,98 @@ alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.ar
 #        PS1="\n\[\e[0;36m\]\u@\h \w\n-> \[\e[0m\]"
 #fi
 __powerline() {
-    # Colorscheme
-    RESET='\[$(tput sgr0)\]'
-    COLOR_CWD='\[$(tput setaf 7)\]' # white
-    COLOR_GIT='\[$(tput setaf 6)\]' # cyan
-    COLOR_VIRTUAL_ENV='\[$(tput setaf 5)\]' # magenta
-    COLOR_SUCCESS='\[$(tput setaf 2)\]' # green
-    COLOR_FAILURE='\[$(tput setaf 1)\]' # red
+    # Colors
+    COLOR_RESET='\[\033[m\]'
+    COLOR_CWD=${COLOR_CWD:-'\[\033[0;34m\]'} # blue
+    COLOR_GIT=${COLOR_GIT:-'\[\033[0;36m\]'} # cyan
+    COLOR_SUCCESS=${COLOR_SUCCESS:-'\[\033[0;32m\]'} # green
+    COLOR_FAILURE=${COLOR_FAILURE:-'\[\033[0;31m\]'} # red
+    COLOR_SSH_USER=${COLOR_SSH_USER:-'\[\033[0;33m\]'} # yellow
 
-    SYMBOL_GIT_MODIFIED='*'
-    # unicode symbols are comprised of 3 octal code points
-    # we escape all but the first code point using \[ and \]
-    # to avoid errors when typing long lines in bash
-    SYMBOL_GIT_BRANCH='¥' # symbol: ¥
-    SYMBOL_GIT_PUSH='!' # symbol: !
-    SYMBOL_GIT_PULL='¡' # symbol: ¡
-    SYMBOL_VIRTUAL_ENV='@' # symbol: @
-    SYMBOL_APPLE='»' # symbol: »
+    # Symbols
+    SYMBOL_GIT_BRANCH=${SYMBOL_GIT_BRANCH:-⑂}
+    SYMBOL_GIT_MODIFIED=${SYMBOL_GIT_MODIFIED:-*}
+    SYMBOL_GIT_PUSH=${SYMBOL_GIT_PUSH:-↑}
+    SYMBOL_GIT_PULL=${SYMBOL_GIT_PULL:-↓}
 
-    ps1() {
-        # Check the exit code of the previous command and display different
-        # colors in the prompt accordingly.
-        if [ $? -eq 0 ]; then
-            local symbol="$COLOR_SUCCESS $SYMBOL_APPLE $RESET"
-        else
-            local symbol="$COLOR_FAILURE $SYMBOL_APPLE $RESET"
-        fi
+    if [[ -z "$PS_SYMBOL" ]]; then
+      case "$(uname)" in
+          Darwin)   PS_SYMBOL='';;
+          Linux)    PS_SYMBOL='$';;
+          *)        PS_SYMBOL='%';;
+      esac
+    fi
 
-        local cwd="$COLOR_CWD\W$RESET"
+    
+    
 
-        if [ -z $VIRTUAL_ENV ]; then
-            local virtualenv=""
-        else
-            local virtualenv=" $COLOR_VIRTUAL_ENV$SYMBOL_VIRTUAL_ENV$(basename $VIRTUAL_ENV)$RESET"
-        fi
-
-        # Fetch the git info
-        local git_eng="env LANG=en_US.UTF-8 git"   # force git output in English to make our work easier
+    __git_info() {
+        [[ $POWERLINE_GIT = 0 ]] && return # disabled
+        hash git 2>/dev/null || return # git not found
+        local git_eng="env LANG=C git"   # force git output in English to make our work easier
 
         # get current branch name
         local ref=$($git_eng symbolic-ref --short HEAD 2>/dev/null)
 
         if [[ -n "$ref" ]]; then
             # prepend branch symbol
-            ref="$SYMBOL_GIT_BRANCH$ref"
+            ref=$SYMBOL_GIT_BRANCH$ref
         else
             # get tag name or short unique hash
-            ref="$($git_eng describe --tags --always 2>/dev/null)"
+            ref=$($git_eng describe --tags --always 2>/dev/null)
         fi
 
-        local git=""
+        [[ -n "$ref" ]] || return  # not a git repo
 
-        if [[ -n "$ref" ]]; then
+        local marks
 
-            local marks
+        # scan first two lines of output from `git status`
+        while IFS= read -r line; do
+            if [[ $line =~ ^## ]]; then # header line
+                [[ $line =~ ahead\ ([0-9]+) ]] && marks+=" $SYMBOL_GIT_PUSH${BASH_REMATCH[1]}"
+                [[ $line =~ behind\ ([0-9]+) ]] && marks+=" $SYMBOL_GIT_PULL${BASH_REMATCH[1]}"
+            else # branch is modified if output contains more lines after the header line
+                marks="$SYMBOL_GIT_MODIFIED$marks"
+                break
+            fi
+        done < <($git_eng status --porcelain --branch 2>/dev/null)  # note the space between the two <
 
-            # scan first two lines of output from `git status`
-            while IFS= read -r line; do
-                if [[ $line =~ ^## ]]; then # header line
-                    [[ $line =~ ahead\ ([0-9]+) ]] && marks+=" $SYMBOL_GIT_PUSH${BASH_REMATCH[1]}"
-                    [[ $line =~ behind\ ([0-9]+) ]] && marks+=" $SYMBOL_GIT_PULL${BASH_REMATCH[1]}"
-                else # branch is modified if output contains more lines after the header line
-                    marks="$SYMBOL_GIT_MODIFIED$marks"
-                    break
-                fi
-            done < <($git_eng status --porcelain --branch 2>/dev/null)  # note the space between the two <
+        # print the git branch segment without a trailing newline
+        printf " $ref$marks"
+    }
 
-            # print the git branch segment without a trailing newline
-            local git=" $COLOR_GIT$ref$marks$RESET"
+    ps1() {
+        # Check the exit code of the previous command and display different
+        # colors in the prompt accordingly.
+        if [ $? -eq 0 ]; then
+            local symbol="$COLOR_SUCCESS $PS_SYMBOL » $COLOR_RESET"
+        else
+            local symbol="$COLOR_FAILURE $PS_SYMBOL » $COLOR_RESET"
         fi
 
-        PS1="\n$cwd$virtualenv$git$symbol"
+        SSH_IP=$( echo $SSH_CLIENT | grep .; echo $? )
+        SSH2_IP=$( echo $SSH2_CLIENT | grep .; echo $? )
+        if [ "$SSH2_IP" != 1 ] || [ "$SSH_IP" != 1 ] ; then
+            local user="$COLOR_SSH_USER\u@\h$COLOR_RESET"
+        else
+            local user="\u@\h"
+        fi
+
+        local cwd="$COLOR_CWD\w$COLOR_RESET"
+        # Bash by default expands the content of PS1 unless promptvars is disabled.
+        # We must use another layer of reference to prevent expanding any user
+        # provided strings, which would cause security issues.
+        # POC: https://github.com/njhartwell/pw3nage
+        # Related fix in git-bash: https://github.com/git/git/blob/9d77b0405ce6b471cb5ce3a904368fc25e55643d/contrib/completion/git-prompt.sh#L324
+        if shopt -q promptvars; then
+            __powerline_git_info="$(__git_info)"
+            local git="$COLOR_GIT\${__powerline_git_info}$COLOR_RESET"
+        else
+            # promptvars is disabled. Avoid creating unnecessary env var.
+            local git="$COLOR_GIT$(__git_info)$COLOR_RESET"
+        fi
+
+        PS1="\n$user $cwd$git\n$symbol"
     }
 
     PROMPT_COMMAND="ps1${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
