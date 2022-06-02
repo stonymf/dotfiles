@@ -94,17 +94,6 @@ __powerline() {
     SYMBOL_GIT_PUSH=${SYMBOL_GIT_PUSH:-↑}
     SYMBOL_GIT_PULL=${SYMBOL_GIT_PULL:-↓}
 
-    if [[ -z "$PS_SYMBOL" ]]; then
-      case "$(uname)" in
-          Darwin)   PS_SYMBOL='';;
-          Linux)    PS_SYMBOL='$';;
-          *)        PS_SYMBOL='%';;
-      esac
-    fi
-
-    
-    
-
     __git_info() {
         [[ $POWERLINE_GIT = 0 ]] && return # disabled
         hash git 2>/dev/null || return # git not found
@@ -144,9 +133,9 @@ __powerline() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly.
         if [ $? -eq 0 ]; then
-            local symbol="$COLOR_SUCCESS $PS_SYMBOL » $COLOR_RESET"
+            local symbol="$COLOR_SUCCESS » $COLOR_RESET"
         else
-            local symbol="$COLOR_FAILURE $PS_SYMBOL » $COLOR_RESET"
+            local symbol="$COLOR_FAILURE » $COLOR_RESET"
         fi
 
         SSH_IP=$( echo $SSH_CLIENT | grep .; echo $? )
