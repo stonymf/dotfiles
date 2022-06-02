@@ -44,9 +44,10 @@ nnoremap <leader>sv :source $MYVIMRC<CR>
 
 " enable file backup
 set backup
-set backupdir=/private/tmp
-set dir=/private/tmp
-set writebackup
+if !isdirectory($HOME."/.vim/backups")
+    silent! execute "!mkdir ~/.vim/backups"
+endif
+set backupdir=~/.vim/backups
 
 "auto install vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
