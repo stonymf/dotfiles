@@ -1,5 +1,5 @@
 #!/bin/bash
-#iatest=$(expr index "$-" i)
+iatest=$( echo $- | grep i; echo $? )
 
 ###############################
 # Export
@@ -28,10 +28,10 @@ PROMPT_COMMAND='history -a'
 
 # Ignore case on auto-completion
 # Note: bind used instead of sticking these in .inputrc
-#if [[ $iatest > 0 ]]; then bind "set completion-ignore-case on"; fi
+if [[ $iatest != 1 ]]; then bind "set completion-ignore-case on"; fi
 
 # Show auto-completion list automatically, without double tab
-#if [[ $iatest > 0 ]]; then bind "set show-all-if-ambiguous On"; fi
+if [[ $iatest != 1 ]]; then bind "set show-all-if-ambiguous On"; fi
 
 # ls color
 export CLICOLOR=1
@@ -80,3 +80,6 @@ PS1="\n\[\e[0;36m\]\u@\h \w\n-> \[\e[0m\]"
 ################################
 # Init fasd
 eval "$(fasd --init auto)"
+
+# Vim keybindings
+set -o vi
