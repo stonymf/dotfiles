@@ -44,9 +44,39 @@ alias python='python3'
 
 # color for grep
 alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
 
+# Naviation aliases
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# fasd
+alias fa='fasd -a'        # any
+alias s='fasd -si'       # show / search / select
+alias d='fasd -d'        # directory
+alias f='fasd -f'        # file
+alias sd='fasd -sid'     # interactive directory selection
+alias sf='fasd -sif'     # interactive file selection
+alias j='fasd_cd -d'     # cd, same functionality as j in autojump
+alias jj='fasd_cd -d -i' # cd with interactive selection
+
+# Paste terminal output to a link
+alias tb="nc termbin.com 9999"
+
+# URL-encode strings
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 
 ################################
 # Prompt
 ################################
 PS1="\n\[\e[0;36m\]\u@\h \w\n-> \[\e[0m\]"
+
+
+################################
+# Misc
+################################
+# Init fasd
+eval "$(fasd --init auto)"
