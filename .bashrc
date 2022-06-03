@@ -174,3 +174,5 @@ set -o vi
 # Let user know if necessary commands don't exist
 if [[ ! $( command -v fasd ) ]]; then echo "fasd needs to be installed"; fi
 
+# enable fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
