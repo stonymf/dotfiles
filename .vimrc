@@ -10,6 +10,8 @@ set softtabstop=4		" number of spaces per tab when editing
 set expandtab			" turn tabs into spaces
 set autoindent          " automatically indent new line to match above
 
+set updatetime=750      " general update speed
+
 set number			" show line numbers
 set showcmd			" show command in bottom bar
 set cursorline			" high current line
@@ -20,6 +22,9 @@ set showmatch			" highlight matching [{()}]
 
 set incsearch			" search as characters are entered
 set hlsearch			" highlight search matches
+
+set splitbelow          " new h split pane below
+set splitright          " new v split pane right
 
 let mapleader=" "       " change leader key to spacebar
 
@@ -59,4 +64,13 @@ endif
 " plugins
 call plug#begin()
 Plug 'easymotion/vim-easymotion'
+Plug 'airblade/vim-gitgutter'
+Plug 'vim-airline/vim-airline'
+Plug 'scrooloose/nerdtree'
+Plug 'w0rp/ale'
 call plug#end()
+
+" plugin options
+let g:airline#extensions#tabline#enabled = 1
+
+let g:ale_python_flake8_options = '--max-line-length=100'    " line length = 100
