@@ -10,6 +10,8 @@ set softtabstop=4		" number of spaces per tab when editing
 set expandtab			" turn tabs into spaces
 set autoindent          " automatically indent new line to match above
 
+set backspace=indent,eol,start  " backspace always works
+
 set updatetime=750      " general update speed
 
 set number			" show line numbers

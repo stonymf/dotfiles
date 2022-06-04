@@ -175,4 +175,8 @@ set -o vi
 if [[ ! $( command -v fasd ) ]]; then echo "fasd needs to be installed"; fi
 
 # enable fzf
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if [[ "$OSTYPE" == "darwin21"* ]]; then
+    [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    . /usr/share/doc/fzf/examples/key-bindings.bash
+fi
