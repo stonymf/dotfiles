@@ -1,8 +1,8 @@
 set nofixendofline      " Prevent adding newline to end of file
 
 syntax enable			" enable syntax processing
+colorscheme default
 set background=dark
-colorscheme pablo
 highlight clear SignColumn  " make gutter transparent
 
 set tabstop=4			" number of spaces rendered per tab
