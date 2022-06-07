@@ -84,3 +84,5 @@ let g:airline#extensions#tabline#enabled = 1
 let g:ale_python_flake8_options = '--max-line-length=100'    " line length = 100
 
 let g:sneak#label = 1   " easymotion-like sneak functionality
+
+nnoremap <C-n> :NERDTree<CR>  " open NERDTree
