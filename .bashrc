@@ -156,7 +156,7 @@ __powerline() {
         if [ -z $VIRTUAL_ENV ]; then
             local venv=""
         else
-            local venv="$(basename $VIRTUAL_ENV)"
+            local venv="($(basename $VIRTUAL_ENV))"
         fi
 
         PS1="\n$user $cwd$git\n$venv$symbol"
