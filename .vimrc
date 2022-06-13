@@ -7,6 +7,7 @@ highlight clear SignColumn  " make gutter transparent
 
 set tabstop=4			" number of spaces rendered per tab
 set softtabstop=4		" number of spaces per tab when editing
+set shiftwidth=4
 set expandtab			" turn tabs into spaces
 set autoindent          " automatically indent new line to match above
 
