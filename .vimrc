@@ -5,11 +5,42 @@ colorscheme default
 set background=dark
 highlight clear SignColumn  " make gutter transparent
 
+set expandtab			" turn tabs into spaces
+" set smarttab
+set shiftwidth=4
 set tabstop=4			" number of spaces rendered per tab
 set softtabstop=4		" number of spaces per tab when editing
-set shiftwidth=4
-set expandtab			" turn tabs into spaces
 set autoindent          " automatically indent new line to match above
+set smartindent
+set wrap
+
+" HTML (tab width 2 chr, no wrapping)
+autocmd FileType html set sw=2
+autocmd FileType html set ts=2
+autocmd FileType html set sts=2
+autocmd FileType html set textwidth=0
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+
+" Python (tab width 4 chr, wrap at 79th char)
+autocmd FileType python set sw=4
+autocmd FileType python set ts=4
+autocmd FileType python set sts=4
+autocmd FileType python set textwidth=79
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+
+" CSS (tab width 2 chr, wrap at 79th char)
+autocmd FileType css set sw=2
+autocmd FileType css set ts=2
+autocmd FileType css set sts=2
+autocmd FileType css set textwidth=79
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+
+" JavaScript (tab width 4 chr, wrap at 79th)
+autocmd FileType javascript set sw=4
+autocmd FileType javascript set ts=4
+autocmd FileType javascript set sts=4
+autocmd FileType javascript set textwidth=79
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 
 set backspace=indent,eol,start  " backspace always works
 
@@ -82,6 +113,9 @@ call plug#end()
 " plugin options
 let g:airline#extensions#tabline#enabled = 1
 
+let g:ale_linters = {'python': ['flake8']}
+let g:ale_fixers = {'*': [], 'python': ['black', 'isort']}
+let g:ale_fix_on_save = 1
 let g:ale_python_flake8_options = '--max-line-length=100'    " line length = 100
 
 let g:sneak#label = 1   " easymotion-like sneak functionality
